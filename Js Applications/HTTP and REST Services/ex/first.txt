@@ -1,0 +1,96 @@
+
+1) REST Countries
+
+
+- request line
+- headers
+- boyd(optional)
+- empty line
+
+GET /rest/v2/name/Bulgaria HTTP/1.1
+Host : restcountries.eu
+
+
+Use Postman to make the same request 
+  = https://restcountries.eu/rest/v2/name/Bulgaria
+
+Make a request that retrieving only the fields name, capital, region, population for the country Italy.
+  = https://restcountries.eu/rest/v2/name/Italy?fields=name;capital;region;population
+
+Make a request that takes all German-speaking countries. 
+   = https://restcountries.eu/rest/v2/lang/de?fields=name;region
+
+
+2) Bus stop
+
+
+allInfo
+  =  http://localhost:3030/jsonstore/bus/businfo
+
+The webhost will respond with valid data to IDs 1287, 1308, 1327 and 2334.  
+   =  http://localhost:3030/jsonstore/bus/businfo/1278   
+   =  http://localhost:3030/jsonstore/bus/businfo/1308
+   =  http://localhost:3030/jsonstore/bus/businfo/1327
+   =  http://localhost:3030/jsonstore/bus/businfo/2334
+
+
+3) Phonebook GET
+
+Get Maya 
+   = http://localhost:3030/jsonstore/phonebook/2d5ae478-87c7-45fa-acf9-f04aa4724421
+Get John 
+   = http://localhost:3030/jsonstore/phonebook/6012c542-38e1-4660-ba40-1b109c40cb2f 
+Get Nicolle 
+= http://localhost:3030/jsonstore/phonebook/d749a819-1e41-4c65-9ce2-7b429c4ebd0d
+
+4) Phonebook POST
+
+using post and creating 2 different persons with this body 
+ = {
+"person": "<person>",
+"phone": "<phone>"
+}
+
+
+5) Employees
+
+allEmployees  data
+ =  http://dummy.restapiexample.com/api/v1/employees
+one employee data 
+ = http://dummy.restapiexample.com/api/v1/employee/3
+
+
+Create new record in database 
+  = http://dummy.restapiexample.com/api/v1/create 
+  with body : 
+{
+"status": "success",
+"data": {
+       "id": 2866
+},
+"message": "Successfully! Record has been added."
+}
+
+
+Update an employee record 
+ = http://dummy.restapiexample.com/api/v1/update/21
+  with body  
+{
+"status": "success",
+"data": [],
+"message": "Successfully! Record has been updated."
+}
+
+Delete an employee record 
+  = http://dummy.restapiexample.com/api/v1/delete/2
+
+
+6) Firebase App
+ 
+Create = https://js-demo-app-ex-default-rtdb.europe-west1.firebasedatabase.app/book/romance.json
+ за всяка книга се добавя информацията в тялото
+
+7) Backendless App
+
+
+working with some requests
