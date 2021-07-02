@@ -1,0 +1,16 @@
+{
+  "name": "ExamPrep2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dealership.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.0.1"
+  }
+}
