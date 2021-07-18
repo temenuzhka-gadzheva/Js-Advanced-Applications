@@ -2,7 +2,6 @@ function getInfo() {
 
     let stopIdElement = document.querySelector('#stopId').value;
     let urlElement = `http://localhost:3030/jsonstore/bus/businfo/${stopIdElement}`;
-
     let ulBussesElement = document.querySelector('#buses');
     let stopNameElement = document.querySelector('#stopName');
     fetch(urlElement)
@@ -14,7 +13,6 @@ function getInfo() {
         })
         .then(data => {
 
-      
             let stopName = Object.values(data)[1];
 
             let bussesObject = Object.values(data)[0];
