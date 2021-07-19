@@ -18,13 +18,11 @@ let registrationForm = document.querySelector('#registration-form');
 let addMovieButton = homeSection.querySelector('#add-movie-btn');
 let addMovieForm = addMovieSection.querySelector('#addMovieForm');
 let detailsButtons = movieSection.getElementsByClassName("details-btn");
-let deleteButtons = moviDetailsSection.getElementsByClassName("delete-btn");
-let editButtons = moviDetailsSection.getElementsByClassName("edit-btn");
-let likeButtons = moviDetailsSection.getElementsByClassName("like-btn");
+let deleteButtons = moviDetailsSection.getElementsByClassName("btn btn-danger delete-btn");
+let editButtons = moviDetailsSection.getElementsByClassName("btn btn-warning edit-btn");
+let likeButtons = moviDetailsSection.getElementsByClassName("btn btn-primary like-btn");
 
-
-
-
+let detailsContainer = moviDetailsSection.querySelector('.container');
 const allSections = [
     homeSection,
     movieSection,
@@ -36,12 +34,6 @@ const allSections = [
 ];
 
 let isUserLogged = isAuthenticated();
-
-printWelcomeMessage(isUserLogged);
-toggleNavigation(isUserLogged);
-showDefaultSections();
-attachEventListeners();
-loadMovies();
 
 // Functions definitions
 
@@ -105,7 +97,61 @@ function registerDetailsButtonListener() {
         })
     }
 }
+function registerDeleteButtonListener() {
+    for (let deleteBtn of deleteButtons) {
+        deleteBtn.addEventListener('click', function () {
+            let movieId = this.getAttribute("data");
 
+            deleteMovie(movieId);
+            moviDetailsSection.remove();
+            location.reload();
+        })
+    }
+}
+
+function registerEditButtonListener() {
+
+
+    // sorry not work :(
+    for (let editBtn of editButtons) {
+
+        editBtn.addEventListener('click', function () {
+
+            let movieId = this.getAttribute("data");
+
+            let title = addMovieForm.querySelector('input[name="title"]');
+            let description = addMovieForm.querySelector('textarea[name="description"]');
+            let img = addMovieForm.querySelector('input[name="imageUrl"]');
+
+            let editedTitle = moviDetailsSection.querySelector('.title-' + movieId)
+            let editedDescription = moviDetailsSection.querySelector('.desc-' + movieId)
+            let editedImg = moviDetailsSection.querySelector('.img-' + movieId);
+
+
+            // editedTitle.textContent = title;
+            //  console.log(editedTitle); return;
+
+        })
+    }
+}
+
+function registerLikeButtonListener() {
+
+
+    for (let likeBtn of likeButtons) {
+
+        likeBtn.addEventListener('click', function () {
+            let movieId = this.getAttribute("data");
+            let likeSpan = moviDetailsSection.querySelector(".likeSpan-" + movieId);
+
+            toggleHiddenClass(likeBtn, true);
+
+            let value = likeSpan.textContent;
+
+            likeSpan.textContent = Number.parseInt(value) + 1;
+        })
+    }
+}
 
 function showDefaultSections() {
     toggleHiddenClass(addMovieSection, true);
@@ -223,7 +269,7 @@ function loadMovies() {
             let movieCards = movieSection.querySelector('#movie-cards');
             movieCards.innerHTML = cardsTemplate;
 
-     
+
             registerDetailsButtonListener();
         }).catch(error => alert(error.message));
 }
@@ -255,30 +301,47 @@ function loadMovie(id) {
         .then(response => response.json())
         .then(data => {
 
-            let movieTemplate = `<div class="row bg-light text-dark">
-                <h1>Movie title: ${data.title}</h1>
+            let movieTemplate = `<div class="row bg-light text-dark movie">
+           <h1 class="movie-heading title-${data._id}"> Movie title: ${data.title}</h1>
 
                 <div class="col-md-8">
-                    <img class="img-thumbnail"
+                    <img class="img-thumbnail movie img-${data._id}"
                         src="${data.img}" alt="Movie">
                 </div>
                 <div class="col-md-4 text-center">
                     <h3 class="my-3 ">Movie Description</h3>
-                    <p>${data.description}</p>
+                    <p  class="movie-description desc-${data._id}">${data.description}</p>
                     <a class="btn btn-danger delete-btn" data="${data._id}" href="#">Delete</a>
                     <a class="btn btn-warning edit-btn" data="${data._id}" href="#">Edit</a> 
-                    <a class="btn btn-primary like-btn" data="${data._id}" href="#">Like</a>
-                    <span class="enrolled-span">Liked 1</span>
+                    <a class="btn btn-primary like-btn" data="${data._id}"  href="#">Like</a>
+                    Liked: <span class="enrolled-span likeSpan-${data._id}">0</span>
                 </div>
             </div>`;
 
-    
+
             let detailsContainer = moviDetailsSection.querySelector('.container');
             detailsContainer.innerHTML = movieTemplate;
 
+            isUserAuthorOfMovie(data);
+            registerEditButtonListener();
+            registerDeleteButtonListener();
+            registerDetailsButtonListener();
+            registerLikeButtonListener();
             hideSections(moviDetailsSection);
-      
+
         }).catch(error => alert(error.message));
+}
+
+function isUserAuthorOfMovie(data) {
+    if (data._ownerId !== localStorage.getItem("userId")) {
+        let editBtn = detailsContainer.querySelector('.edit-btn');
+        let deleteBtn = detailsContainer.querySelector('.delete-btn');
+        toggleHiddenClass(editBtn, true);
+        toggleHiddenClass(deleteBtn, true);
+    } else {
+        let likeBtn = detailsContainer.querySelector('.like-btn');
+        toggleHiddenClass(likeBtn, true);
+    }
 }
 
 function getAuthorization() {
@@ -286,14 +349,52 @@ function getAuthorization() {
     return localStorage.getItem('accessToken');
 }
 
-function deleteMovie(id){
+function deleteMovie(id) {
     let movieUrl = `http://localhost:3030/data/movies/${id}`;
 
-    fetch(movieUrl,{
-        method: 'DELETE'
+    fetch(movieUrl, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-authorization': getAuthorization()
+        }
     }).then(response => response.json())
-    .then(data =>{
-        console.log(data);
-    })
+        .then(data => {
+            alert('Successfully deleted movie!')
+        })
+        .catch(err => {
+            alert(err.message);
+        })
 }
 
+function editMovie(id) {
+    // sorry not work :(
+    let title = addMovieForm.querySelector('input[name="title"]').value;
+    let description = addMovieForm.querySelector('textarea[name="description"]').value;
+    let img = addMovieForm.querySelector('input[name="imageUrl"]').value;
+    let movieUrl = `http://localhost:3030/data/movies/${id}`;
+
+    fetch(movieUrl, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-authorization': getAuthorization()
+        },
+        body: JSON.stringify({ title, description, img })
+    }).then(response => response.json())
+        .then(data => {
+            hideSections(!createMovie);
+
+            alert('Successfully updated movie!')
+        })
+        .catch(err => {
+            alert(err.message);
+        })
+
+}
+
+printWelcomeMessage(isUserLogged);
+toggleNavigation(isUserLogged);
+showDefaultSections();
+attachEventListeners();
+loadMovies();
