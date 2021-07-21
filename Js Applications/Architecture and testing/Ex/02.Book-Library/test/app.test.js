@@ -17,11 +17,11 @@ function fakeResponse(data) {
 }
 
 let createdBook = {
-    1: {
+    ale: {
         author: "Alex",
         title: "Brief Interviews with Hideous Men by David Foster Wallace",
     },
-    2: {
+    bob: {
         author: "Boby",
         title: "The Particular Sadness of Lemon Cake by Aimee Bender"
     }
