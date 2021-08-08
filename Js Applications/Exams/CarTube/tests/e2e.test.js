@@ -521,7 +521,7 @@ describe('E2E tests', function () {
             expect(matches.length).to.be.equal(0);
         });
 
-        it.only('show results [ 2.5 Points ]', async () => {
+        it('show results [ 2.5 Points ]', async () => {
             await handle(endpoints.search('2010'), { get: mockData.catalog.slice(0, 2) });
 
             await page.goto(host);
